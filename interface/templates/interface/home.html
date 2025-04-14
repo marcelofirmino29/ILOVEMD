@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>iLoveMD - PDF para Markdown</title>
+    <style>
+        /* Estilos anteriores ... */
+        body { font-family: sans-serif; margin: 40px; background: #f2f2f2; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        textarea { width: 98%; height: 400px; margin-top: 10px; box-sizing: border-box; }
+        .button { padding: 10px 20px; font-size: 16px; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; vertical-align: middle; /* Alinha botões na mesma linha */ }
+        .submit-button { background-color: #007bff; }
+        .submit-button:disabled { background-color: #cccccc; cursor: not-allowed; }
+        .download-button { background-color: #28a745; }
+        /* Estilo para o botão Cancelar */
+        .cancel-button {
+            background-color: #dc3545; /* Vermelho */
+            margin-left: 10px; /* Espaço entre botões */
+        }
+        .error-message { color: #dc3545; border: 1px solid #dc3545; padding: 10px; margin-top: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #f8d7da; }
+        form p { margin-bottom: 15px; }
+        form label { display: block; margin-bottom: 5px; }
+        h2 { margin-top: 30px; }
+        #loading-indicator { margin-top: 15px; font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 iLoveMD</h1>
+        <p>Converta seus arquivos PDF para o formato Markdown facilmente.</p>
+
+        <form method="post" enctype="multipart/form-data" id="upload-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Converter para Markdown" class="button submit-button" id="submit-button">
+             {# Botão Cancelar - pode ficar aqui ou dentro do loading #}
+             <button type="button" id="cancel-button" class="button cancel-button" style="display: none;">Cancelar</button>
+        </form>
+
+        <div id="loading-indicator" style="display: none;">
+            <p>⏳ Convertendo, por favor aguarde...</p>
+            {# Alternativa: colocar o botão cancelar aqui para só aparecer junto com o loading #}
+            {# <button type="button" id="cancel-button-alt" class="button cancel-button">Cancelar</button> #}
+        </div>
+
+        {# --- Seção de Resultados (sem alterações) --- #}
+        {% if error_message or markdown_content %}
+            <h2>📝 Resultado:</h2>
+            {% if error_message %}
+                <div class="error-message">
+                    <strong>Ocorreu um erro:</strong> {{ error_message }}
+                </div>
+            {% endif %}
+            {% if markdown_content and not error_message %}
+                <textarea readonly>{{ markdown_content }}</textarea>
+            {% endif %}
+            {% if md_filename and md_url and not error_message %}
+                 <a href="{{ md_url }}" class="button download-button" download="{{ md_filename }}">
+                     Baixar {{ md_filename }}
+                 </a>
+            {% endif %}
+        {% endif %} {# Fim da Seção de Resultados #}
+    </div>
+
+    {# --- Bloco JavaScript (Atualizado) --- #}
+    <script>
+        const form = document.getElementById('upload-form');
+        const submitButton = document.getElementById('submit-button');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const cancelButton = document.getElementById('cancel-button'); // Pega o botão cancelar
+
+        // Quando o formulário for enviado...
+        form.addEventListener('submit', function() {
+            loadingIndicator.style.display = 'block';
+            cancelButton.style.display = 'inline-block'; // Mostra o botão Cancelar
+            submitButton.disabled = true;
+            submitButton.value = 'Convertendo...';
+        });
+
+        // Quando o botão Cancelar for clicado...
+        cancelButton.addEventListener('click', function() {
+            // Apenas reseta a interface, não para o servidor!
+            loadingIndicator.style.display = 'none'; // Esconde "Convertendo..."
+            cancelButton.style.display = 'none'; // Esconde o próprio botão Cancelar
+            submitButton.disabled = false; // Reabilita o botão Converter
+            submitButton.value = 'Converter para Markdown';
+            form.reset(); // Limpa o formulário (incluindo o campo de arquivo)
+
+            // Opcional: se quiser forçar recarregar a página para um estado 100% limpo:
+            // location.reload();
+        });
+
+        // Quando a página for mostrada (ex: vindo do cache do botão voltar)
+        window.addEventListener('pageshow', function(event) {
+             if (event.persisted) {
+                 loadingIndicator.style.display = 'none';
+                 cancelButton.style.display = 'none'; // Garante que está escondido
+                 submitButton.disabled = false;
+                 submitButton.value = 'Converter para Markdown';
+                 form.reset(); // Reseta o formulário
+             }
+        });
+    </script>
+    {# --- Fim do Bloco JavaScript --- #}
+
+</body>
+</html>

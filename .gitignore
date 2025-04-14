@@ -1,0 +1,78 @@
+# Arquivo gerado por: https://www.toptal.com/developers/gitignore/api/django,python,linux,macos,windows,visualstudiocode
+# Editado para incluir itens específicos do projeto
+
+### Ambientes Virtuais ###
+# Ignora a pasta do ambiente virtual
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+### Arquivos de Bytecode e Cache do Python ###
+# Python cache
+__pycache__/
+# Arquivos compilados
+*.py[cod]
+*$py.class
+
+### Banco de Dados ###
+# Ignora o banco de dados SQLite de desenvolvimento
+db.sqlite3
+db.sqlite3-journal
+
+### Arquivos de Mídia (Uploads) ###
+# Ignora o conteúdo da pasta de mídia (onde os PDFs são salvos)
+# A pasta em si pode precisar existir, mas não versionamos os uploads.
+media/*
+# Descomente a linha abaixo se você quiser manter a pasta 'media' vazia no repo
+# !media/.gitkeep
+
+### Arquivos Estáticos Coletados ###
+# Ignora a pasta onde o collectstatic junta os arquivos para produção
+# (Definido por STATIC_ROOT em settings.py, se você configurar)
+/staticfiles/
+/static_root/
+
+### Arquivos de Configuração de IDEs e Editores ###
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm
+.idea/
+
+### Arquivos de Sistema Operacional ###
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+### Arquivos de Log ###
+*.log
+logs/
+
+### Arquivos de Cobertura de Teste ###
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+### Arquivos de Configuração Sensíveis (Exemplo) ###
+# Arquivos .env geralmente contêm segredos e não devem ser versionados
+.env
+
+# Outros arquivos específicos que você não quer versionar
+# *.local
+# local_settings.py
